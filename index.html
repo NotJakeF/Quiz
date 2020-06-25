@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title></title>
+	<style type="text/css">
+		body {
+			margin: 0;
+		}
+
+		/* * = wildcard selector */
+		* {
+			outline: 1px dotted black;
+		}
+
+		.quizContainer {
+			width: 100vw;
+			height: 100vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.quizArea {
+			height: 400px;
+			width: 400px;
+			background-color: lightblue;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="counter"></div>
+	<button id="start-game">Start Game</button>
+	<div class="quizContainer">
+		<div class="quizArea" id="quiz">
+			<!-- 			<h1>Z<span>Z</span></h1>
+			<h2>Z</h2>
+			<h3>Z</h3>
+			<h4>Z</h4>
+			<h5>Z</h5>
+			<h6>Z</h6>
+			<p>Z<span>Z</span></p>
+			<span>Z</span> -->
+		</div>
+	</div>
+
+	<script type="text/javascript">
+
+		var quiz = document.getElementById("quiz")
+		var counter = document.getElementById("counter")
+		var startGameBtn = document.getElementById("start-game")
+		// qIndex counts the question that you have answered
+		var qIndex = 0;
+
+		var timeRemaining = 10000;
+		// -- = -1
+		var interval;
+		function startTimer(){
+			setInterval(function () {
+			timeRemaining--
+			// counter.textContent = taking the counter and using textContent to display the "textContent"
+			counter.textContent = timeRemaining
+			if (timeRemaining <= 0) {
+				createTimeoutView()
+				clearInterval(interval)
+			}
+			// 1000 ms attached to line 56 function, second arguement
+		}, 1000)
+	}
+//  questions is an array and line 68 to 72 is an object, GET USED TO OBJECTS
+		var questions = [
+			{
+				prompt: "Question 1: What food is From Asia?",
+				answers: ["pizza", "sushi", "tacos"],
+				correctAnswer: "sushi",
+				userAnswer: null
+			},
+			{
+				prompt: "Question 2: which doesn't have meat?",
+				answers: ["burgers", "steak", "salad"],
+				correctAnswer: "salad",
+				userAnswer: null
+			},
+			{
+				prompt: "Question 3: Which sport uses a bat?",
+				answers: ["baseball", "hockey", "soccer"],
+				correctAnswer: "baseball",
+				userAnswer: null
+			},
+			{
+				prompt: "Question 4: What planet do we live on?",
+				answers: ["earth", "mars", "jupiter"],
+				correctAnswer: "earth",
+				userAnswer: null
+			},
+		]
+// game starts essentially makes the the qusetions popup on webpage
+	startGameBtn.addEventListener("click",startGame )
+		//createQuestion(questions[qIndex])
+
+		//QO is question object
+		function startGame(){
+			startTimer()
+			createQuestion()
+		}
+
+		function createQuestion(qObj) {
+			var qObj = questions[qIndex];
+			// template literal = `${}` = fancy strings for line breaks meaning multiple lines and interpolation
+			var htmlSnippet = `<h3>${qObj.prompt}</h3>`
+			for (var i = 0; i < qObj.answers.length; i++) {
+				htmlSnippet += `<div class="answer">${qObj.answers[i]}</div>`
+			}
+			console.log(htmlSnippet)
+			quiz.innerHTML = htmlSnippet
+		}
+
+		// Create the last panel to look at
+		function createFinishView() {
+			
+			// Tall the user answers
+			var finalScore = 0
+			for (var i = 0; i < questions.length; i++) {
+				if (questions[i].userAnswer == questions[i].correctAnswer) {
+					finalScore++
+				}
+			}
+
+			var html = `<h3>Congratulations</h3>
+			<p>You got ${finalScore} questions correct!<p>`
+			quiz.innerHTML = html
+		}
+
+		// Create the last panel to look at
+		function createTimeoutView() {
+
+			var html = `<h3>MISSION FAILED</h3>
+			<p>You ran out of time<p>`
+			quiz.innerHTML = html
+		}
+
+
+		//event listener
+		document.addEventListener('click', function (event) {
+			// console.log(event.target)
+
+			// check to see if you clicked on the right thing
+			if (event.target.classList.contains("answer")) {
+
+				var userAnswer = event.target.textContent
+
+				
+				// update the user answer
+				questions[qIndex].userAnswer = userAnswer
+				
+				// increment the current question
+				qIndex++
+
+				if (qIndex >= questions.length) {
+					createFinishView()
+				} else {
+					createQuestion()
+				}
+				// go to next question
+			}
+		})
+
+
+	</script>
+	}
+
+</body>
+
+</html>
